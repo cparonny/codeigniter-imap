@@ -105,7 +105,7 @@ class Imap
 
 		if (isset($config['encrypto']))
 		{
-			$enc .= '/' . $config['encrypto'];
+			$enc .= '/imap/' . $config['encrypto'];
 		}
 
 		if (isset($config['validate']) && $config['validate'] === false)
@@ -1433,6 +1433,33 @@ class Imap
 		}
 
 		return 'TEXT/PLAIN';
+	}
+
+	// get single uid by message number 
+	
+	
+	public function getuid(int $msg_number) {
+	$uid = imap_uid ($this->stream, $msg_number);
+	return $uid;
+
+	}
+	
+	// Get All uids 
+	
+	public function getuids(string $folder = null, string $flag_criteria = null) {
+		
+		$total = $this->count_messages($folder, $flag_criteria);
+		$uids = [];
+		if ($total !== 0) {
+			
+			for ($xindex = 1; $xindex <= $total; $xindex++) {
+				$uid = imap_uid ($this->stream, $xindex);
+				array_push($uids, $uid);
+			  }
+		} 
+	
+	return $uids;
+
 	}
 
 	/**
